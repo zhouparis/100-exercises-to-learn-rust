@@ -12,13 +12,14 @@ pub struct Ticket {
 
 impl Ticket {
     pub fn title(&self) -> &str {
-        todo!()
+        &self.title.trim()        
     }
 
     pub fn description(&self) -> &str {
-        todo!()
+        &self.description.trim()
     }
 }
+
 
 #[cfg(test)]
 mod tests {

@@ -34,17 +34,18 @@ impl Ticket {
         }
     }
 
-    pub fn title(self) -> String {
-        self.title
+    pub fn title(&self) -> String {
+        self.title.clone()
     }
 
-    pub fn description(self) -> String {
-        self.description
+    pub fn description(&self) -> String {
+        self.description.clone()
     }
 
-    pub fn status(self) -> String {
-        self.status
+    pub fn status(&self) -> String {
+        self.status.clone()
     }
+
 }
 
 #[cfg(test)]

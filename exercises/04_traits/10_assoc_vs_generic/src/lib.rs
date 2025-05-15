@@ -12,6 +12,33 @@
 // interested in learning more about it.
 // You don't have to though: it's perfectly okay to write three separate
 // implementations manually. Venture further only if you're curious.
+pub use num_traits::pow::Pow;
+
+pub trait Power<E> {
+    fn power(self, n: E) -> Self;
+}
+
+impl Power<u32> for u32 {
+    fn power(self, n: u32) -> u32 {
+        Pow::pow(self, n)
+    }
+
+}
+
+impl Power<u16> for u32 {
+    fn power(self, n: u16) -> u32 {
+        Pow::pow(self, n as u32)
+    }
+
+}
+
+impl<'a> Power<&'a u32> for u32 {
+    fn power(self,n : &'a u32) -> u32 {
+        Pow::pow(self, n)
+    }
+
+}
+
 
 #[cfg(test)]
 mod tests {

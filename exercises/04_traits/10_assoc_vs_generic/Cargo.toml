@@ -2,3 +2,9 @@
 name = "assoc_vs_generic"
 version = "0.1.0"
 edition = "2021"
+
+[dependancies]
+num-traits = "0.2.19"
+
+[dependencies]
+num-traits = "0.2.19"

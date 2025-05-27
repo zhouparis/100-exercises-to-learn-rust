@@ -2,10 +2,27 @@
 //  When implementing `Display`, you may want to use the `write!` macro from Rust's standard library.
 //  The docs for the `std::fmt` module are a good place to start and look for examples:
 //  https://doc.rust-lang.org/std/fmt/index.html#write
+use std::fmt::Display;
+use std::error::Error;
 
+#[derive(Debug)]
 enum TicketNewError {
     TitleError(String),
     DescriptionError(String),
+}
+
+impl Display for TicketNewError{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match &self {
+            &TicketNewError::TitleError(s) if *s == "Title cannot be empty".to_string() => write!(f, "{}", s),
+            &TicketNewError::TitleError(s) if *s == "Title cannot be longer than 50 bytes".to_string() => write!(f, "{}", s),
+            _ => write!(f,"Description not provided")
+        }
+    }
+}
+
+impl Error for TicketNewError {
+
 }
 
 // TODO: `easy_ticket` should panic when the title is invalid, using the error message
@@ -13,7 +30,41 @@ enum TicketNewError {
 //   When the description is invalid, instead, it should use a default description:
 //   "Description not provided".
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
-    todo!()
+    let temp_title: String= title.clone();
+    let temp_description: String = description.clone();
+    let temp_status: Status = status.clone();
+    let new_ticket: Result<Ticket, TicketNewError> = Ticket::new(temp_title, temp_description, temp_status);
+    match &new_ticket {
+        Ok(_) => Ticket::new(title,description,status).unwrap(),
+        Err(err) => match err {
+            TicketNewError::TitleError(val) if *val == "Title cannot be empty".to_string() => panic!("Title cannot be empty"),
+            TicketNewError::TitleError(val) if *val == "Title cannot be longer than 50 bytes".to_string() => panic!("Title cannot be longer than 50 bytes"),
+            TicketNewError::DescriptionError(val) if *val == "Description cannot be empty".to_string() => {
+                let new_description = "Description not provided".to_string(); 
+                return Ticket{
+                    title,
+                    description: new_description,
+                    status,
+                };
+            }
+            TicketNewError::DescriptionError(val) if *val == "Description cannot be longer than 500 bytes".to_string() => {
+                let new_description = "Description not provided".to_string(); 
+                return Ticket{
+                    title,
+                    description: new_description,
+                    status,
+                };
+            }
+            _ => Ticket {
+                title,
+                description,
+                status
+            }
+        }
+    
+    }
+
+
 }
 
 #[derive(Debug, PartialEq, Clone)]

@@ -16,27 +16,33 @@ enum Status {
 }
 
 impl Ticket {
-    pub fn new(title: String, description: String, status: Status) -> Ticket {
+    pub fn new(title: String, description: String, status: Status) -> Result<Ticket, String> {
         if title.is_empty() {
-            panic!("Title cannot be empty");
+            let exit_error: Result<Ticket, String> = Err("Title cannot be empty".to_string());
+            return exit_error
         }
         if title.len() > 50 {
-            panic!("Title cannot be longer than 50 bytes");
+            let exit_error: Result<Ticket, String> = Err("Title cannot be longer than 50 bytes".to_string());
+            return exit_error
         }
         if description.is_empty() {
-            panic!("Description cannot be empty");
+            let exit_error: Result<Ticket, String> = Err("Description cannot be empty".to_string());
+            return exit_error
         }
         if description.len() > 500 {
-            panic!("Description cannot be longer than 500 bytes");
+            let exit_error: Result<Ticket, String> = Err("Description cannot be longer than 500 bytes".to_string());
+            return exit_error
         }
 
-        Ticket {
+        let new_ticket: Result<Ticket, String> = Ok(Ticket {
             title,
             description,
             status,
-        }
+        });
+        new_ticket
     }
 }
+
 
 #[cfg(test)]
 mod tests {

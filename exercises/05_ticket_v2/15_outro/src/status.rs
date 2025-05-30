@@ -1,10 +1,51 @@
 // TODO: Implement `TryFrom<String>` and `TryFrom<&str>` for the `Status` enum.
 //  The parsing should be case-insensitive.
 
+use std::fmt::Display;
+
+#[derive(Debug, PartialEq, Clone, thiserror::Error)]
 pub enum Status {
     ToDo,
     InProgress,
     Done,
+}
+
+impl Display for Status {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self)
+    }
+}
+
+impl TryFrom<String> for Status {
+    type Error = NewStatusError;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        if value.eq_ignore_ascii_case("todo") { return Ok(Status::ToDo)
+        } else if value.eq_ignore_ascii_case("inprogress") { return Ok(Status::InProgress)
+        } else if value.eq_ignore_ascii_case("done") { return Ok(Status::Done)
+        } else { return Err(NewStatusError {invalid_status: value})}
+    }
+}
+
+impl TryFrom<&str> for Status {
+    type Error = NewStatusError;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        if value.eq_ignore_ascii_case("todo") { return Ok(Status::ToDo)
+        } else if value.eq_ignore_ascii_case("inprogress") { return Ok(Status::InProgress)
+        } else if value.eq_ignore_ascii_case("done") { return Ok(Status::Done)
+        } else { return Err(NewStatusError {invalid_status: value.to_string()})}
+    }
+}
+
+
+#[derive(Debug, thiserror::Error)]
+pub struct NewStatusError {
+    invalid_status: String,
+}
+
+impl Display for NewStatusError{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "something went wrong with status")
+    }
 }
 
 #[cfg(test)]

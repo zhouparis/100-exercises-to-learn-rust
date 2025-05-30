@@ -10,14 +10,23 @@
 //
 // We expect `fibonacci(0)` to return `0`, `fibonacci(1)` to return `1`,
 // `fibonacci(2)` to return `1`, and so on.
-pub fn fibonacci(n: u32) -> u32 {
-    // TODO: implement the `fibonacci` function
-    //
-    // Hint: use a `Vec` to memoize the results you have already calculated
-    // so that you don't have to recalculate them several times.
-    todo!()
-}
+pub fn fibonacci(n:usize) -> usize {
+    let mut memo: Vec<Option<usize>> = vec![None; n + 1];
 
+    if n >= 0 { memo[0] = Some(0)};
+    if n >= 1 { memo[1] = Some(1)};
+
+    fn fib_helper(n: usize, memo: &mut Vec<Option<usize>>) -> usize {
+        if let Some(val) = memo[n] {
+            return val
+        } else {
+            let value = fib_helper(n-1, memo) + fib_helper(n-2, memo);
+            memo[n] = Some(value);
+            return value
+        }
+    } 
+    return fib_helper(n, &mut memo)
+}
 #[cfg(test)]
 mod tests {
     use crate::fibonacci;

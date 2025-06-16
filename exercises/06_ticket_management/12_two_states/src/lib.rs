@@ -11,6 +11,7 @@ use ticket_fields::{TicketDescription, TicketTitle};
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,
+    ticket_generator: IDGenerator,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -41,11 +42,53 @@ impl TicketStore {
     pub fn new() -> Self {
         Self {
             tickets: Vec::new(),
+            ticket_generator: IDGenerator::new(),
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> TicketId {
+        let new_id = self.ticket_generator.clone().ticket_id_gen();
+        self.ticket_generator.next();
+        let new_tick: Ticket = Ticket {
+            id: new_id,
+            title: ticket.title,
+            description: ticket.description,
+            status: Status::ToDo,
+        };
+        self.tickets.push(new_tick);
+        new_id
+    }
+
+    pub fn get(&self, search_id: TicketId) -> Option<&Ticket>{
+        for item in &self.tickets {
+            if search_id == item.id {
+                return Some(&item)
+            } else {
+                continue
+            }
+        }
+    panic!("No ticket found")
+    }
+}
+
+
+#[derive(Clone)]
+pub struct IDGenerator {
+    current_id: u64,
+}
+
+impl IDGenerator {
+    fn new() -> Self {
+        IDGenerator { current_id: 0 }
+    }
+
+    fn next(&mut self) -> () {
+        self.current_id = self.current_id + 1;
+    }
+
+    fn ticket_id_gen(mut self) -> TicketId {
+        self.next();
+        TicketId (self.current_id.clone())
     }
 }
 

@@ -33,6 +33,12 @@ impl IntoIterator for TicketStore {
     }
 }
 
+impl TicketStore {
+    pub fn iter(&self) -> std::slice::Iter<'_,Ticket> {
+        self.tickets.iter()
+    }
+}
+
 
 #[derive(Clone, Debug, Copy, PartialEq)]
 pub enum Status {

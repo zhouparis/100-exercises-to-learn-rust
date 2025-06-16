@@ -3,6 +3,8 @@
 
 use ticket_fields::{TicketDescription, TicketTitle};
 
+
+
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,
@@ -28,13 +30,14 @@ impl TicketStore {
             tickets: Vec::new(),
         }
     }
-
     // Using `Into<Ticket>` as the type parameter for `ticket` allows the method to accept any type
     // that can be infallibly converted into a `Ticket`.
     // This can make it nicer to use the method, as it removes the syntax noise of `.into()`
     // from the calling site. It can worsen the quality of the compiler error messages, though.
-    pub fn add_ticket(&mut self, ticket: impl Into<Ticket>) {
-        self.tickets.push(ticket.into());
+    pub fn add_ticket<T>(&mut self, new_tick: T)
+    where
+        T: Into<Ticket> {
+        self.tickets.push(new_tick.into());
     }
 }
 

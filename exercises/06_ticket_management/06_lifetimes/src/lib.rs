@@ -20,6 +20,36 @@ pub enum Status {
     Done,
 }
 
+impl Iterator for Ticket {
+    type Item = Ticket;
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(self.clone())
+    }
+}
+
+impl Iterator for &Ticket {
+    type Item = Ticket;
+    fn next(&mut self) -> Option<Self::Item> {
+        Some(self.clone())
+    }
+}
+
+impl IntoIterator for TicketStore {
+    type Item = Ticket;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.tickets.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a TicketStore {
+    type Item = &'a Ticket;
+    type IntoIter = std::slice::Iter<'a, Ticket>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.tickets.iter()
+    }
+}
+
 impl TicketStore {
     pub fn new() -> Self {
         Self {
@@ -31,11 +61,10 @@ impl TicketStore {
         self.tickets.push(ticket);
     }
 
-    pub fn iter(&self) -> std::slice::Iter<Ticket> {
+    pub fn iter(&self) -> std::slice::Iter<'_,Ticket> {
         self.tickets.iter()
     }
 }
-
 #[cfg(test)]
 mod tests {
     use super::*;

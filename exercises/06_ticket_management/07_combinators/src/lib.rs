@@ -2,6 +2,20 @@
 //  in `TicketStore` with status set to `Status::ToDo`.
 use ticket_fields::{TicketDescription, TicketTitle};
 
+impl TicketStore {
+    fn to_dos(&self) -> Vec<&Ticket>{
+        let mut new_vec: Vec<&Ticket> = Vec::new();
+        for each_ticket in &self.tickets {
+            if each_ticket.status == Status::ToDo {
+                new_vec.push(each_ticket);
+            } else {
+                continue;
+            }
+        }
+        new_vec
+    }
+}
+
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,

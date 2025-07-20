@@ -4,6 +4,7 @@
 //  Implement additional traits on `TicketId` if needed.
 
 use std::collections::BTreeMap;
+use std::collections::btree_map::Iter;
 use std::ops::{Index, IndexMut};
 use ticket_fields::{TicketDescription, TicketTitle};
 
@@ -13,7 +14,15 @@ pub struct TicketStore {
     counter: u64,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+impl<'a> IntoIterator for &'a TicketStore {
+    type Item = (&'a TicketId, &'a Ticket)
+    type IntoIter = Iter<'a, TicketId, Ticket>;
+    fn into_iter(self) -> Self::IntoIter {
+        self.tickets.iter()
+    }
+}   
+
+#[derive(Clone, Copy, Debug, PartialEq, Ord, PartialOrd, Eq)]
 pub struct TicketId(u64);
 
 #[derive(Clone, Debug, PartialEq)]
@@ -54,16 +63,18 @@ impl TicketStore {
             description: ticket.description,
             status: Status::ToDo,
         };
-        todo!();
+        self.tickets.insert(
+            id, ticket
+        );
         id
     }
 
     pub fn get(&self, id: TicketId) -> Option<&Ticket> {
-        todo!()
+        self.tickets.get(&id)
     }
 
     pub fn get_mut(&mut self, id: TicketId) -> Option<&mut Ticket> {
-        todo!()
+        self.tickets.get_mut(&id)
     }
 }
 

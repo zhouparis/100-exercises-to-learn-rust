@@ -4,7 +4,6 @@
 //  Implement additional traits on `TicketId` if needed.
 
 use std::collections::BTreeMap;
-use std::collections::btree_map::Iter;
 use std::ops::{Index, IndexMut};
 use ticket_fields::{TicketDescription, TicketTitle};
 
@@ -15,10 +14,10 @@ pub struct TicketStore {
 }
 
 impl<'a> IntoIterator for &'a TicketStore {
-    type Item = (&'a TicketId, &'a Ticket)
-    type IntoIter = Iter<'a, TicketId, Ticket>;
+    type Item = &'a Ticket;
+    type IntoIter = std::collections::btree_map::Values<'a, TicketId, Ticket>;
     fn into_iter(self) -> Self::IntoIter {
-        self.tickets.iter()
+        self.tickets.values()
     }
 }   
 
@@ -49,7 +48,7 @@ pub enum Status {
 impl TicketStore {
     pub fn new() -> Self {
         Self {
-            tickets: todo!(),
+            tickets: BTreeMap::new(),
             counter: 0,
         }
     }
